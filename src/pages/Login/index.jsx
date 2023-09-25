@@ -1,4 +1,5 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
@@ -6,6 +7,7 @@ import Button from "@mui/material/Button";
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { fetchAuthData } from "../../store/slices/auth";
 
 import styles from "./Login.module.scss";
 
@@ -15,6 +17,8 @@ const validationSchema = yup.object().shape({
 });
 
 export const Login = () => {
+  const dispatch = useDispatch()
+
   const {
     register,
     handleSubmit,
@@ -22,14 +26,14 @@ export const Login = () => {
     formState: { errors, isValid },
   } = useForm({
     defaultValues: {
-      email: '',
+      email: 'test@test.ru',
       password: '',
     },
     resolver: yupResolver(validationSchema),
   })
 
   const onSubmit = (values) => {
-    console.log(values);
+    dispatch(fetchAuthData(values))
   }
 
   console.log('errors', errors);
