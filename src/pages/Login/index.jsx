@@ -1,5 +1,7 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { Navigate } from "react-router-dom";
+
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
@@ -7,7 +9,7 @@ import Button from "@mui/material/Button";
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { fetchAuthData } from "../../store/slices/auth";
+import { fetchAuthData, isAuthSelect } from "../../store/slices/auth";
 
 import styles from "./Login.module.scss";
 
@@ -17,28 +19,35 @@ const validationSchema = yup.object().shape({
 });
 
 export const Login = () => {
+  const isAuth = useSelector(isAuthSelect)
   const dispatch = useDispatch()
 
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors, isValid },
   } = useForm({
     defaultValues: {
-      email: 'test@test.ru',
-      password: '',
+      email: 'test123@test.ru',
+      password: '12345',
     },
     resolver: yupResolver(validationSchema),
   })
 
-  const onSubmit = (values) => {
-    dispatch(fetchAuthData(values))
+  const onSubmit = async (values) => {
+    const data = await dispatch(fetchAuthData(values))
+
+    if (!data.payload) {
+      return alert('Не удалось авторизоваться')
+    }
+    if ('token' in data.payload) {
+      localStorage.setItem('token', data.payload.token)
+    }
   }
 
-  console.log('errors', errors);
-  console.log('isValid', isValid);
-
+  if (isAuth) {
+    return <Navigate to='/' />
+  }
 
   return (
     <Paper classes={{ root: styles.root }}>
