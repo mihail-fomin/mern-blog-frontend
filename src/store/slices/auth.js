@@ -6,13 +6,14 @@ export const fetchAuthData = createAsyncThunk('auth/fetchUserData', async (param
   return data
 })
 
-export const fetchRegisterData = createAsyncThunk('auth/fetchRegisterData', async (params) => {
+export const fetchRegisterData = createAsyncThunk('auth/fetchRegisterData', async (params, { rejectWithValue }) => {
   try {
-    const { data } = await axios.post('/auth/register', { params })
+    const { data } = await axios.post('/auth/register', params)
 
     return data
   } catch (error) {
     console.log('error: ', error);
+    return rejectWithValue(error.response.data);
   }
 })
 

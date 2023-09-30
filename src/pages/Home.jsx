@@ -11,6 +11,7 @@ import { CommentsBlock } from '../components/CommentsBlock';
 export const Home = () => {
   const dispatch = useDispatch()
   const { posts, tags } = useSelector(state => state.posts)
+  const userData = useSelector(state => state.auth.data)
 
   const isPostLoading = posts.status === 'loading'
   const areTagsLoading = tags.status === 'loading'
@@ -41,7 +42,7 @@ export const Home = () => {
                 viewsCount={post.viewsCount}
                 commentsCount={3}
                 tags={post.tags}
-                isEditable
+                isEditable={userData?._id === post.user._id}
               />
             ))}
         </Grid>

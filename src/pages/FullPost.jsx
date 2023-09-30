@@ -26,6 +26,7 @@ export const FullPost = () => {
     return <Post isLoading={isLoading} isFullPost />
   }
 
+
   return (
     <>
       <Post

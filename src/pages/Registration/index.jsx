@@ -1,5 +1,6 @@
 import React from 'react';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { Navigate } from 'react-router-dom';
 
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
@@ -10,13 +11,16 @@ import Avatar from '@mui/material/Avatar';
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { fetchRegisterData } from "../../store/slices/auth";
+import { fetchRegisterData, isAuthSelect } from "../../store/slices/auth";
 
 import styles from './Login.module.scss';
 
 const validationSchema = yup.object().shape({
   email: yup.string().email('Введите корректный email').required('Email обязателен'),
-  password: yup.string().required('Пароль обязателен'),
+  password: yup
+    .string()
+    .min(5, 'Минимальная длина пароля - 5 символов')
+    .required('Пароль обязателен'),
   fullName: yup
     .string()
     .matches(/^[A-Za-zа-яА-Я ]*$/, 'Поажлуйста, введите корректное Имя')
@@ -27,18 +31,20 @@ const validationSchema = yup.object().shape({
 
 export const Registration = () => {
   const dispatch = useDispatch()
+  const isAuth = useSelector(isAuthSelect)
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm({
     defaultValues: {
-      fullName: '',
+      fullName: 'Михаил',
       email: 'test123@test.ru',
       password: '12345',
       avatarUrl: 'https://redux-toolkit.js.org/tutorials/typescript'
     },
+    mode: 'onChange',
     resolver: yupResolver(validationSchema),
   })
 
@@ -48,6 +54,10 @@ export const Registration = () => {
     if (!data.payload) {
       return alert('Не удалось зарегистрироваться!')
     }
+  }
+
+  if (isAuth) {
+    return <Navigate to='/' />
   }
 
   return (
