@@ -42,7 +42,7 @@ export const Registration = () => {
       fullName: 'Михаил',
       email: 'test123@test.ru',
       password: '12345',
-      avatarUrl: 'https://redux-toolkit.js.org/tutorials/typescript'
+      avatarUrl: 'https://sun9-32.userapi.com/impg/nlLsM4ew8kzT-Epz03PThYyCc9Cq1L1Mibff5Q/5ry1IxYz0mU.jpg?size=1620x2160&quality=95&sign=351a029b66124ef20ac4d6349fd16f17&type=album'
     },
     mode: 'onChange',
     resolver: yupResolver(validationSchema),

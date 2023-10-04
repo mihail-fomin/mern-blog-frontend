@@ -12,7 +12,7 @@ export const fetchRegisterData = createAsyncThunk('auth/fetchRegisterData', asyn
 
     return data
   } catch (error) {
-    console.log('error: ', error);
+    alert('Не удалось пройти регистрацию! Вомзожно, данный email уже занят')
     return rejectWithValue(error.response.data);
   }
 })
