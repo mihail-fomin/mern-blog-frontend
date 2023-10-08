@@ -8,7 +8,7 @@ import { fetchLoginData, isAuthSelect } from "./store/slices/auth";
 
 function App() {
   const dispatch = useDispatch()
-  const isAuth = useSelector(isAuthSelect)
+  // const isAuth = useSelector(isAuthSelect)
 
   React.useEffect(() => {
     dispatch(fetchLoginData())
