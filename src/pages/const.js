@@ -1,0 +1,1 @@
+export const API_URI = 'https://blog-fullstack-production.up.railway.app'

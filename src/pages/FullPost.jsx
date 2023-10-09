@@ -5,6 +5,8 @@ import { Index } from "../components/AddComment";
 import { CommentsBlock } from "../components/CommentsBlock";
 import axios from "../services/axios";
 
+import { API_URI } from "./const";
+
 export const FullPost = () => {
   const [data, setData] = React.useState()
   const [isLoading, setIsLoading] = React.useState(true)
@@ -32,7 +34,7 @@ export const FullPost = () => {
       <Post
         id={data._id}
         title={data.title}
-        imageUrl={data.imageUrl ? `http://localhost:4444${data.imageUrl}` : ''}
+        imageUrl={data.imageUrl ? `${API_URI}${data.imageUrl}` : ''}
         user={data.user}
         createdAt={data.createdAt}
         viewsCount={data.viewsCount}

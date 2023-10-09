@@ -1,12 +1,16 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Grid from '@mui/material/Grid';
+
 import { fetchPosts, fetchTags } from '../store/slices/posts'
 import { Post } from '../components/Post';
 import { TagsBlock } from '../components/TagsBlock';
 import { CommentsBlock } from '../components/CommentsBlock';
+
+import { API_URI } from './const';
 
 export const Home = () => {
   const dispatch = useDispatch()
@@ -36,7 +40,7 @@ export const Home = () => {
               <Post
                 id={post._id}
                 title={post.title}
-                imageUrl={post.imageUrl ? `http://localhost:4444${post.imageUrl}` : ''}
+                imageUrl={post.imageUrl ? `${API_URI}${post.imageUrl}` : ''}
                 user={post.user}
                 createdAt={post.createdAt}
                 viewsCount={post.viewsCount}
