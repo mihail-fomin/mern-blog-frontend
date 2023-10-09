@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { isAuthSelect } from '../../store/slices/auth';
 import { Navigate, useNavigate } from 'react-router-dom';
 import axios from '../../services/axios';
+import { API_URI } from '../const';
 
 import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
@@ -100,10 +101,10 @@ export const AddPost = () => {
           <Button variant="contained" color="error" onClick={onClickRemoveImage}>
             Удалить
           </Button>
-          <img className={styles.image} src={`http://localhost:4444${imageUrl}`} alt="Uploaded" />
+          <img className={styles.image} src={`${API_URI}${imageUrl}`} alt="Uploaded" />
         </>
       )}
-      < br />
+      <br />
       <br />
       <TextField
         classes={{ root: styles.title }}
