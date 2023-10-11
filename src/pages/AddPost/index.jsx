@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { isAuthSelect } from '../../store/slices/auth';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import axios from '../../services/axios';
 import { API_URI } from '../const';
 
@@ -14,8 +14,11 @@ import 'easymde/dist/easymde.min.css';
 import styles from './AddPost.module.scss';
 
 export const AddPost = () => {
+  const { id } = useParams()
   const isAuth = useSelector(isAuthSelect)
   const navigate = useNavigate()
+
+  const isEditing = Boolean(id)
 
   const [isLoading, setIsLoading] = React.useState(false)
   const [text, setText] = React.useState('');
@@ -27,11 +30,16 @@ export const AddPost = () => {
 
   const handleChangeFile = async (event) => {
     try {
-      const formData = new FormData()
-      const file = event.target.files[0]
-      formData.append('image', file)
-      const { data } = await axios.post('/upload', formData)
-      setImageUrl(data.url)
+      // Создаем объект FormData для отправки файла на сервер
+      const formData = new FormData();
+      // Получаем выбранный файл из события
+      const file = event.target.files[0];
+      // Добавляем файл в объект FormData под именем 'image'
+      formData.append('image', file);
+      // Отправляем файл на сервер с помощью POST-запроса
+      const { data } = await axios.post('/upload', formData);
+      // Устанавливаем URL изображения, полученного от сервера, в состояние (state) компонента
+      setImageUrl(data.url);
     } catch (error) {
       console.warn(error);
       alert('Ошибка при загрузке файла')
@@ -46,22 +54,25 @@ export const AddPost = () => {
     try {
       setIsLoading(true)
 
-      const tagsArray = tags.split(' ')
-
       const fields = {
         title,
         imageUrl,
-        tagsArray,
+        tags,
         text
       }
 
-      const { data } = await axios.post('/posts', fields)
+      const { data } = isEditing
+        ? await axios.patch(`/posts/${id}`, fields)
+        : await axios.post('/posts', fields)
 
-      const id = data._id
+      console.log('data: ', data);
+      const _id = isEditing
+        ? id // если в редактировании, то возввращается id из адресной строки
+        : data._id // иначе - тот _id, что мы вытащили из post-запроса
 
-      navigate(`/posts/${id}`)
+      navigate(`/posts/${_id}`)
     } catch (error) {
-      console.warn(error);
+      console.error(error);
       alert('Ошибка при создании статьи')
     }
   }
@@ -70,6 +81,20 @@ export const AddPost = () => {
   const onChange = React.useCallback((value) => {
     setText(value);
   }, []);
+
+  React.useEffect(() => {
+    if (id) {
+      axios.get(`/posts/${id}`).then(({ data }) => {
+        setTitle(data.title)
+        setText(data.text)
+        setTags(data.tags.join(' '))
+        setImageUrl(data.imageUrl)
+      }).catch(err => {
+        console.error(err)
+        alert('Ошибка при получении статьи')
+      })
+    }
+  }, [])
 
   const options = React.useMemo(
     () => ({
@@ -125,7 +150,7 @@ export const AddPost = () => {
       <SimpleMDE className={styles.editor} value={text} onChange={onChange} options={options} />
       <div className={styles.buttons}>
         <Button onClick={onSubmit} size="large" variant="contained">
-          Опубликовать
+          {isEditing ? 'Сохранить' : 'Опубликовать'}
         </Button>
         <a href="/">
           <Button size="large">Отмена</Button>
