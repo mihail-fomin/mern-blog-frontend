@@ -14,6 +14,8 @@ import { API_URI } from './const';
 
 export const Home = () => {
   const dispatch = useDispatch()
+
+  const [activeTabIndex, setActiveTabIndex] = React.useState(0);
   const { posts, tags } = useSelector(state => state.posts)
   const userData = useSelector(state => state.auth.data)
 
@@ -21,13 +23,22 @@ export const Home = () => {
   const areTagsLoading = tags.status === 'loading'
 
   React.useEffect(() => {
-    dispatch(fetchPosts())
-    dispatch(fetchTags())
-  }, [])
+    if (activeTabIndex === 0) {
+      dispatch(fetchPosts('latest'));
+    } else if (activeTabIndex === 1) {
+      dispatch(fetchPosts('popular'));
+    }
+    dispatch(fetchTags());
+  }, [activeTabIndex]);
 
   return (
     <>
-      <Tabs style={{ marginBottom: 15 }} value={0} aria-label="basic tabs example">
+      <Tabs
+        style={{ marginBottom: 15 }}
+        value={activeTabIndex}
+        onChange={(event, newValue) => setActiveTabIndex(newValue)}
+        aria-label="basic tabs example"
+      >
         <Tab label="Новые" />
         <Tab label="Популярные" />
       </Tabs>
